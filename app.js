@@ -59,9 +59,9 @@ function postComplement(req,res,next){
     uri: responseUrl,
     body: data,
     method: 'POST'
-  }, function (err, res, body) {
+  }, function (err, resonse, body) {
     if(resonse.statusCode === 200){
-      console.log("success");
+      console.log("complement made: " + complement;);
     }
   });
 
