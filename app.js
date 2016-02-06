@@ -47,11 +47,11 @@ function postComplement(req,res,next){
   }
 
   request.post(responseUrl,bodyPayload,
-    function(error,response,body)){
+    function(error,response,body){
       if(resonse.statusCode === 200){
         console.log("success");
       }
-    }
+    });
 
 }
 
@@ -65,4 +65,6 @@ function getComplement(sentFrom, text){
     'I whish I could marry you !!!'
   ];
 
+  var index = Math.floor((Math.random() * (complements.length -1)) + 1);
+  return complements[index];
 }
