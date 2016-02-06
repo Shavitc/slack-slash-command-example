@@ -9,6 +9,10 @@ var port = process.env.PORT || 1337;
 app.use(bodyParser.urlencoded({extended:true}));
 
 
+app.get('/',function(req,res){
+  res.status(200).send('App is Running');
+})
+
 app.post('/',function(req,res,next){
   var myIntegrationToken = "SQzKVhi26gnOjNXCf7j1p9lM"; //Your integration token here
   if(req.body.token === myIntegrationToken && req.body.user_name !== 'slackbot'){
