@@ -58,8 +58,8 @@ function sendRequest(url,data,next){
     uri: url,
     body: data,
     method: 'POST'
-  }, function (err, resonse, body) {
-      next(err,response,body);
+  }, function (err, res, body) {
+      next(err,res,body);
   });
 }
 
