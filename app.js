@@ -8,7 +8,6 @@ var port = process.env.PORT || 1337;
 
 app.use(bodyParser.urlencoded({extended:true}));
 
-
 app.get('/',function(req,res){
   res.status(200).send('App is Running');
 })
@@ -16,14 +15,26 @@ app.get('/',function(req,res){
 app.post('/',function(req,res,next){
   var myIntegrationToken = "SQzKVhi26gnOjNXCf7j1p9lM"; //Your integration token here
   if(req.body.token === myIntegrationToken && req.body.user_name !== 'slackbot'){
+
     res.status(200).json({
-      text:"Thinking of a complement for you..., wait 5 seconds"
+      text:"Thinking of a complement for you..."
     });
 
     setTimeout(function () {
-      postComplement(req,res,next);
-    }, 5000);
+      var responseUrl = req.body.response_url;
+      var userName = req.body.user_name;
 
+      var complement = userName + " - " + getComplement();
+
+      var data = JSON.stringify({text: complement});
+      sendRequest(responseUrl,data,
+        function(err,response,body){
+          if(response.status == 200){
+            console.log("complement sent - " + complement);
+          }
+        });
+
+    }, 5000);
 
   }else{
     res.status(405)
@@ -37,36 +48,19 @@ app.listen(port,function(){
 })
 
 
-function postComplement(req,res,next){
-  var channelName = req.body.channel_name;
-  var text = req.body.text;
-  var responseUrl = req.body.response_url;
-  var userName = req.body.user_name;
 
-  var complement = userName + " - " + getComplement();
-
-  var bodyPayload = {
-    text: complement
-  }
-  var data = JSON.stringify(bodyPayload);
-  var contentLength = data.length;
-
+function sendRequest(url,data,next){
   request({
     headers: {
-      'Content-Length': contentLength,
+      'Content-Length': data.length,
       'Content-Type': 'application/json'
     },
-    uri: responseUrl,
+    uri: url,
     body: data,
     method: 'POST'
   }, function (err, resonse, body) {
-    if(resonse.statusCode === 200){
-      console.log("complement made: " + complement);
-    }
+      next(err,response,body);
   });
-
-
-
 }
 
 
@@ -76,9 +70,11 @@ function getComplement(sentFrom, text){
     'You are the BOSS!!!',
     'Your hair looks wonderful today!',
     'You are such a wonderful developer, you should be working at Google!',
-    'I whish I could marry you !!!'
+    'I whish I could marry you !!!',
+    'You are fucking Awsome!!!!',
+    'You have such a lovely smile, you should use it more often!!'
   ];
 
-  var index = Math.floor((Math.random() * (complements.length -1)) + 1);
+  var index = Math.floor((Math.random() * (complements.length -1)));
   return complements[index];
 }
