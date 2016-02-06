@@ -20,7 +20,10 @@ app.post('/',function(req,res,next){
       text:"Thinking of a complement for you..., wait 5 seconds"
     });
 
-    postComplement();
+    setTimeout(function () {
+      postComplement();
+    }, 5000);
+
 
   }else{
     res.status(405)
@@ -45,13 +48,24 @@ function postComplement(req,res,next){
   var bodyPayload = {
     text: complement
   }
+  var data = JSON.stringify(bodyPayload);
+  var contentLength = data.length;
 
-  request.post(responseUrl,bodyPayload,
-    function(error,response,body){
-      if(resonse.statusCode === 200){
-        console.log("success");
-      }
-    });
+  request({
+    headers: {
+      'Content-Length': contentLength,
+      'Content-Type': 'application/json'
+    },
+    uri: responseUrl,
+    body: data,
+    method: 'POST'
+  }, function (err, res, body) {
+    if(resonse.statusCode === 200){
+      console.log("success");
+    }
+  });
+
+
 
 }
 
